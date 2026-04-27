@@ -62,6 +62,9 @@ pipeline {
                         // Download kubectl directly into the Jenkins workspace
                         sh "curl -sLO https://dl.k8s.io/release/v1.29.2/bin/linux/amd64/kubectl && chmod +x ./kubectl"
                         
+                        // DEBUG: Print the IAM identity Jenkins is using to authenticate with EKS
+                        sh "aws sts get-caller-identity"
+                        
                         // Apply the Kubernetes manifests
                         sh "./kubectl apply -f k8s/"
                         
