@@ -5,11 +5,10 @@ pipeline {
         // Variables for Docker and Kubernetes
         DOCKER_IMAGE = 'starbucks-fastapi'
         // Specify your Docker registry here, e.g., 'your-dockerhub-username' or AWS ECR URL
-        DOCKER_REGISTRY = 'your-docker-registry'
+        DOCKER_REGISTRY = '617029295065.dkr.ecr.ap-south-2.amazonaws.com'
         IMAGE_TAG = "${env.BUILD_ID}"
         
         // Define your credentials IDs set up in Jenkins
-        DOCKER_CREDS_ID = 'docker-credentials'
         KUBECONFIG_ID = 'k8s-kubeconfig'
     }
 
@@ -46,12 +45,11 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    echo "Pushing Docker Image to Registry"
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin"
-                        sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}"
-                        sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest"
-                    }
+                    echo "Pushing Docker Image to AWS ECR"
+                    // AWS CLI login
+                    sh "aws ecr get-login-password --region ap-south-2 | docker login --username AWS --password-stdin ${DOCKER_REGISTRY}"
+                    sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}"
+                    sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest"
                 }
             }
         }
