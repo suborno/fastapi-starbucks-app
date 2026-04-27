@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: starbucks-fastapi-deployment
+  labels:
+    app: starbucks-fastapi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: starbucks-fastapi
+  template:
+    metadata:
+      labels:
+        app: starbucks-fastapi
+    spec:
+      containers:
+      - name: starbucks-fastapi
+        image: starbucks-fastapi:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
