@@ -59,12 +59,14 @@ pipeline {
                     withKubeConfig(credentialsId: "${KUBECONFIG_ID}") {
                         // Update the deployment image to the newly built tag
                         sh "sed -i 's|image: starbucks-fastapi:latest|image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}|g' k8s/deployment.yaml"
+                        // Download kubectl directly into the Jenkins workspace
+                        sh "curl -sLO https://dl.k8s.io/release/v1.29.2/bin/linux/amd64/kubectl && chmod +x ./kubectl"
                         
                         // Apply the Kubernetes manifests
-                        sh "kubectl apply -f k8s/"
+                        sh "./kubectl apply -f k8s/"
                         
                         // Verify deployment rollout
-                        sh "kubectl rollout status deployment/starbucks-fastapi-deployment"
+                        sh "./kubectl rollout status deployment/starbucks-fastapi-deployment"
                     }
                 }
             }
