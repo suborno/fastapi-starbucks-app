@@ -24,11 +24,9 @@ pipeline {
                 script {
                     echo "Setting up Python environment and running tests/linters"
                     // Optionally, run pytest or black here if you add tests later
-                    sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install -r requirements.txt
-                    '''
+                    // python3 -m venv venv
+                    // . venv/bin/activate
+                    // pip install -r requirements.txt
                 }
             }
         }
